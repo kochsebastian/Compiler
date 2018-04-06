@@ -13,7 +13,7 @@
    //Typedef der Structs vor der konkreten Implementation aufgrund von rekursiven Abhaengigkeiten
 	//Benoetigte Structs: Term, Atom und Formel.
 	typedef struct term term;
-	typedef struct atom atom;
+	typedef struct atom atom;//test
 	typedef struct formula formula;
 	//Zusaetzlich werden extra Structs fuer die Startzeiger angelegt, um die Uebersichtlichkeit zu bewahren
 	typedef struct term_list term_list;
