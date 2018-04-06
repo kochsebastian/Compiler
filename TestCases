@@ -1,0 +1,8 @@
+ex x (P(x) & Q22(x,y2)) | Q(x) <-> ~ P(x) -> bottom
+X <-> Y
+X -> Y
+X & Z -> Y
+~ ~ X -> Y
+~ all x P(x)
+~ ex x P(x)
+/*test*/
