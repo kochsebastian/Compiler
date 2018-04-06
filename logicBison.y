@@ -13,14 +13,14 @@
    //Typedef der Structs vor der konkreten Implementation aufgrund von rekursiven Abhaengigkeiten
 	//Benoetigte Structs: Term, Atom und Formel.
 	typedef struct term term;
-	typedef struct atom atom;//test
+	typedef struct atom atom;
 	typedef struct formula formula;
 	//Zusaetzlich werden extra Structs fuer die Startzeiger angelegt, um die Uebersichtlichkeit zu bewahren
 	typedef struct term_list term_list;
 	typedef struct atom_list atom_list;
 	typedef struct formula_list formula_list;
 
-   enum {atom, ...}
+   enum typ {atom, and, or, not, impl, aeql, all, ex, top, bottom}
 	struct term{
 		char* name;			//Name
 		term_list* mylist;	//Eigene Termliste (Bei keiner Verwendung NULL)
@@ -34,21 +34,23 @@
 	};
 
 	struct formula{
-		enum type;
+		enum typ type;
 
       char* string;
-
+      atom* a;
       term_list* mylist;
 
-      formula Notsubformel;
+      formula* Notsubformel;
 
-      formula linkeformel;
-      formula rechteformel;
+      formula* linkeformel;
+      formula* rechteformel;
 
       char* var;
       formula Quantsubformel;
 
       char* boolsch;
+
+      formula* next;
 	};
 
 	struct term_list{
@@ -113,20 +115,49 @@ stmtseq: /* Empty */
 
 Formel:
    Atom {
-      $<formelval>$ = (formel*)malloc(sizeof(formel));
+      $<formelval>$ = (formula*)malloc(sizeof(formula));
       $<formelval>$->type = atom;
-
-      printf("Atom->Formel\n");}
-      | TOPI {printf("True->Formel\n");}
-      | BOTTOMI {printf("False->Formel\n");}
-      | NOT Formel {printf("Not Formel->Formel\n");}
-      | OPENPAR Formel CLOSEPAR {printf("(Formel)->Formel\n");}
-      | Formel AND Formel {printf("FormelandFormel->Formel\n");}
-      | Formel OR Formel {printf("FormelorFormel->Formel\n");}
-      | Formel PFEIL Formel {printf("FormelimplFormel->Formel\n");}
-      | Formel DOPPELPFEIL Formel {printf("FormeleqFormel->Formel\n");}
-      | ALLI VAR Formel {printf("AllVarFormel->Formel\n");}
-      | EXI VAR Formel {printf("ExVarFormel->Formel\n");};
+      $<formelval>$->a = $<atomval>1;
+      printf("Atom->Formel\n");
+   }
+   | TOPI {
+      $<formelval>$ = (formula*)malloc(sizeof(formula));
+      $<formelval>$->type = top;
+      $<formelval>$->boolsch = $<sval>1;
+      printf("True->Formel\n");
+   }
+   | BOTTOMI {
+      $<formelval>$ = (formula*)malloc(sizeof(formula));
+      $<formelval>$->type = bottom;
+      $<formelval>$->boolsch = $<sval>1;
+      printf("False->Formel\n");
+   }
+   | NOT Formel {
+      $<formelval>$ = (formula*)malloc(sizeof(formula));
+      $<formelval>$->type = not;
+      $<formelval>$->Notsubformel = $<formelval>2;
+      printf("Not Formel->Formel\n");
+   }
+   | OPENPAR Formel CLOSEPAR {
+      printf("(Formel)->Formel\n");
+   }
+   | Formel AND Formel {
+      printf("FormelandFormel->Formel\n");
+   }
+   | Formel OR Formel {
+      printf("FormelorFormel->Formel\n");
+   }
+   | Formel PFEIL Formel {
+      printf("FormelimplFormel->Formel\n");
+   }
+   | Formel DOPPELPFEIL Formel {
+      printf("FormeleqFormel->Formel\n");}
+   | ALLI VAR Formel {
+      printf("AllVarFormel->Formel\n");
+   }
+    EXI VAR Formel {
+      printf("ExVarFormel->Formel\n");
+   };
 
 
 
