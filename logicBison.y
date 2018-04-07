@@ -16,10 +16,9 @@
 	typedef struct formula_s formula_s;
 	//Zusaetzlich werden extra Structs fuer die Startzeiger angelegt, um die Uebersichtlichkeit zu bewahren
 	typedef struct term_list_s term_list_s;
-	typedef struct atom_list_s atom_list_s;
-	typedef struct formula_list_s formula_list_s;
 
-   enum typ {atom, and, or, not, impl, eql, all, ex, top, bottom};
+
+   enum typ {atom, and, or, not, impl, eql, all, ex, top, bottom, brackets};
 
 	struct term_s{
 		char* name;			//Name
@@ -35,8 +34,8 @@
 
 	struct formula_s{
 		enum typ type;
+      char* operant;
 
-      char* string;
       atom_s* a;
       term_list_s* mylist;
 
@@ -48,7 +47,7 @@
       char* var;
       formula_s* Quantsubformel;
 
-      char* boolsch;
+      char* truefalse;
 
       formula_s* next;
 	};
@@ -57,15 +56,19 @@
 		term_s* first;		//Startknoten der Liste
 	};
 
-	struct atom_list_s{
-		atom_s* first;
-	};
 
-	struct formula_list_s{
-		formula_s* first;
-	};
+
+   void printTermList(term_list_s* tl );
+
+   void printFormula(formula_s* f, int aufruf);
+   void createFormulaList(formula_s* f);
+   void printAtom(atom_s* a);
+   void printTerm(term_s* t);
+
+
 
 };
+
 
 
 
@@ -76,10 +79,11 @@
   atom_s* atomval;
   formula_s* formelval;
   term_list_s* tlistval;
-  atom_list_s* alistval;
-  formula_list_s* flistval;
+
+  
 
 }
+
 
 %start stmtseq
 
@@ -111,87 +115,117 @@
 stmtseq: /* Empty */
     | NEWLINE stmtseq       {}
     | Formel  NEWLINE stmtseq {}
-    | error NEWLINE stmtseq {};  /* After an error, start afresh */
+    | error NEWLINE stmtseq {};  /* After an error start afresh */
 
 Formel:
    Atom {
       $<formelval>$ = (formula_s*) malloc(sizeof(formula_s));
       $<formelval>$->type = atom;
       $<formelval>$->a = $<atomval>1;
-      printf("Atom->Formel\n");
+      printf("Parser: Atom->Formel\n");
+      printFormula($<formelval>$,0);
+      createFormulaList($<formelval>$);
    }
    | TOPI {
       $<formelval>$ = (formula_s*) malloc(sizeof(formula_s));
       $<formelval>$->type = top;
-      $<formelval>$->boolsch = $<sval>1;
-      printf("True->Formel\n");
+      $<formelval>$->truefalse = $<sval>1;
+      printf("Parser: True->Formel\n");
+      printFormula($<formelval>$,0);
+      createFormulaList($<formelval>$);
    }
    | BOTTOMI {
       $<formelval>$ = (formula_s*) malloc(sizeof(formula_s));
       $<formelval>$->type = bottom;
-      $<formelval>$->boolsch = $<sval>1;
-      printf("False->Formel\n");
+      $<formelval>$->truefalse = $<sval>1;
+      printf("Parser: False->Formel\n");
+      printFormula($<formelval>$,0);
+      createFormulaList($<formelval>$);
    }
    | NOT Formel {
       $<formelval>$ = (formula_s*) malloc(sizeof(formula_s));
       $<formelval>$->type = not;
+      $<formelval>$->operant = $<sval>1;
       $<formelval>$->Notsubformel = $<formelval>2;
-      printf("Not Formel->Formel\n");
+      printf("Parser: Not Formel->Formel\n");
+      printFormula($<formelval>$,0);
+      createFormulaList($<formelval>$);
    }
    | OPENPAR Formel CLOSEPAR {
       $<formelval>$ = (formula_s*) malloc(sizeof(formula_s));
       $<formelval>$ = $<formelval>2;
-      printf("(Formel)->Formel\n");
+      $<formelval>$->type = brackets;
+      printf("Parser: (Formel)->Formel\n");
+      printFormula($<formelval>$,0);
+      createFormulaList($<formelval>$);
    }
    | Formel AND Formel {
       $<formelval>$ = (formula_s*) malloc(sizeof(formula_s));
       $<formelval>$->type = and;
+      $<formelval>$->operant = $<sval>2;
       $<formelval>$->linkeformel = $<formelval>1;
       $<formelval>$->rechteformel = $<formelval>3;
-      printf("FormelandFormel->Formel\n");
+      printf("Parser: FormelandFormel->Formel\n");
+      printFormula($<formelval>$,0);
+      createFormulaList($<formelval>$);
    }
    | Formel OR Formel {
       $<formelval>$ = (formula_s*) malloc(sizeof(formula_s));
       $<formelval>$->type = or;
+      $<formelval>$->operant = $<sval>2;
       $<formelval>$->linkeformel = $<formelval>1;
       $<formelval>$->rechteformel = $<formelval>3;
-      printf("FormelorFormel->Formel\n");
+      printf("Parser: FormelorFormel->Formel\n");
+      printFormula($<formelval>$,0);
+      createFormulaList($<formelval>$);
    }
    | Formel PFEIL Formel {
       $<formelval>$ = (formula_s*) malloc(sizeof(formula_s));
       $<formelval>$->type = impl;
+      $<formelval>$->operant = $<sval>2;
       $<formelval>$->linkeformel = $<formelval>1;
       $<formelval>$->rechteformel = $<formelval>3;
-      printf("FormelimplFormel->Formel\n");
+      printf("Parser: FormelimplFormel->Formel\n");
+      printFormula($<formelval>$,0);
+      createFormulaList($<formelval>$);
    }
    | Formel DOPPELPFEIL Formel {
        $<formelval>$ = (formula_s*) malloc(sizeof(formula_s));
       $<formelval>$->type = eql;
+      $<formelval>$->operant = $<sval>2;
       $<formelval>$->linkeformel = $<formelval>1;
       $<formelval>$->rechteformel = $<formelval>3;
-      printf("FormeleqFormel->Formel\n");
+      printf("Parser: FormeleqFormel->Formel\n");
+      printFormula($<formelval>$,0);
+      createFormulaList($<formelval>$);
    }
    | ALLI VAR Formel {
-       $<formelval>$ = (formula_s*) malloc(sizeof(formula_s));
+      $<formelval>$ = (formula_s*) malloc(sizeof(formula_s));
       $<formelval>$->type = all;
+      $<formelval>$->operant = $<sval>1;
       $<formelval>$->var = $<sval>2;
       $<formelval>$->Quantsubformel = $<formelval>3;
-      printf("AllVarFormel->Formel\n");
+      printf("Parser: AllVarFormel->Formel\n");
+      printFormula($<formelval>$,0);
+      createFormulaList($<formelval>$);
    }
    | EXI VAR Formel {
-       $<formelval>$ = (formula_s*) malloc(sizeof(formula_s));
+      $<formelval>$ = (formula_s*) malloc(sizeof(formula_s));
       $<formelval>$->type = ex;
+      $<formelval>$->operant = $<sval>1;
       $<formelval>$->var = $<sval>2;
       $<formelval>$->Quantsubformel = $<formelval>3;
-      printf("ExVarFormel->Formel\n");
+      printf("Parser: ExVarFormel->Formel\n");
+      printFormula($<formelval>$,0);
+      createFormulaList($<formelval>$);
    };
 
 Atom:
    PRAE OPENPAR TermL CLOSEPAR {
-       $<atomval>$ = (atom_s*) malloc(sizeof(atom_s));
+      $<atomval>$ = (atom_s*) malloc(sizeof(atom_s));
       $<atomval>$->name = $<sval>1;
       $<atomval>$->mylist = $<tlistval>3;
-      printf("Praedikat(TermListe)->Atom\n");
+      printf("Parser: Praedikat(TermListe)->Atom\n");
    };
 
 Term:
@@ -200,21 +234,21 @@ Term:
 		$<termval>$->name = $<sval>1;
 		$<termval>$->next=NULL;
 		$<termval>$->mylist=NULL;
-      printf("Variable->Term\n");
+      printf("Parser: Variable->Term\n");
    }
    | FUNC OPENPAR TermL CLOSEPAR {
       $<termval>$ = (term_s*) malloc(sizeof(term_s));
 		$<termval>$->name = $<sval>1;
 		$<termval>$->next=NULL;
 		$<termval>$->mylist = $<tlistval>3;
-      printf("Funktiom(TermListe)->Term\n");
+      printf("Parser: Funktiom(TermListe)->Term\n");
    }
    | FUNC {
       $<termval>$ = (term_s*) malloc(sizeof(term_s));
 		$<termval>$->name = $<sval>1;
 		$<termval>$->next=NULL;
 		$<termval>$->mylist=NULL;
-      printf("Funktion->Term\n");
+      printf("Parser: Funktion->Term\n");
    };
 
 TermL:
@@ -222,116 +256,85 @@ TermL:
       $<termval>1->next = $<tlistval>3->first;
       $<tlistval>3->first= $<termval>1;
       $<tlistval>$ = $<tlistval>3;
-      printf("Term,TermListe->TermListe\n");
+      printf("Parser: Term,TermListe->TermListe\n");
    }
    | Term {
       $<tlistval>$ = (term_list_s*) malloc(sizeof(term_list_s));
 	   $<tlistval>$->first = $<termval>1;
-      printf("Term->TermListe\n");
+      printf("Parser: Term->TermListe\n");
    };
 
 %%
 
-   /* void printTermList(term_list_s* tl, int tabs){
+    void printTermList(term_list_s* tl ){
    	term_s* myt = tl->first;
    	while(myt != NULL){
-   		printTerm(myt,tabs,0);
+   		printTerm(myt);
    		myt = myt->next;
    	}
    }
 
-   void printAtomList(atom_list_s* al, int tabs){
-   	atom_s* mya = al->first;
-   	while(mya != NULL){
-   		printAtom(mya,tabs,0);
-   		mya = mya->next;
-   	}
-   }
-   void printAtom(atom_s* a, int tabs, int next){
-   	printTabs(tabs-1);
-   	printChar('+');
-   	printTabs(tabs);
-   	printf("ATOM\n");
-   	printTabs(tabs-1);
-   	printChar('+');
-   	printTabs(tabs);
-   	printf("Name: %s\n",a->name);
-   	printTabs(tabs);
-   	printf("Next: ");
-   	if(a->next == NULL){
-   		printf("NULL\n");
+
+   void printAtom(atom_s* a  ){
+
+   	printf("%s(",a->name);
+
+   	if(a->mylist == NULL){
+   			printf("NULL\n");
    	}
    	else{
-   		printf("%s\n",a->next->name);
-   		if(next>0){
-   			printTabs(tabs-1);
-   			printChar('-');
-   			printAtom(a->next,tabs,next);
-   		}
+   	   printTermList(a->mylist);
    	}
-   	if(next<=0){
-   		printTabs(tabs);
-   		printf("Termliste: ");
-   		if(a->mylist == NULL){
-   			printf("NULL\n");
-   		}
-   		else{
-   			printf("\n");
-   			printTermList(a->mylist,tabs+1);
-   		}
-   	}
+      printf(")");
    }
 
-   void printTerm(term_s* t, int tabs, int next){
-   	printTabs(tabs-1);
-   	printChar('=');
-   	printTabs(tabs);
-   	printf("TERM\n");
-   	printTabs(tabs-1);
-   	printChar('=');
-   	printTabs(tabs);
-   	printf("Name: %s\n",t->name);
-   	printTabs(tabs);
-   	printf("Next: ");
+   void printTerm(term_s* t){
+
+   	printf("%s",t->name);
    	if(t->next == NULL){
-   		printf("NULL\n");
+
    	}
    	else{
-   		printf("%s\n",t->next->name);
-   		if(next>0){
-   			printTabs(tabs);
-   			printChar('-');
-   			printTerm(t->next,tabs,next);
-   		}
-   	}
-   	if(next<=0){
-   		printTabs(tabs);
-   		printf("Termliste: ");
-   		if(t->mylist == NULL){
-   			printf("NULL\n");
-   		}
-   		else{
-   			printf("\n");
-   			printTermList(t->mylist,tabs+1);
-   		}
+         printf(",");
    	}
    }
 
-   void printTabs(int tabs){
-   	tabs = (tabs>=0?tabs:0);
-   	for(int i=0;i<tabs;i++){
-   		printf("\t");
-   	}
+
+
+
+
+   void printFormula(formula_s* f, int aufruf){
+
+      switch(f->type){
+         case atom: printAtom(f->a);break;
+         case and: printFormula(f->linkeformel,1);printf(" & ");printFormula(f->rechteformel,1);break;
+         case or: printFormula(f->linkeformel,1);printf(" | ");printFormula(f->rechteformel,1);break;
+         case not: printf(" ~ "); printFormula(f->Notsubformel,1); break;
+         case impl:printFormula(f->linkeformel,1);printf(" -> ");printFormula(f->rechteformel,1);break;
+         case eql:printFormula(f->linkeformel,1);printf(" <-> ");printFormula(f->rechteformel,1);break;
+         case all: printf(" all "); printf("%s ",f->var); printFormula(f->Quantsubformel,1); break;
+         case ex: printf(" ex "); printf("%s ",f->var); printFormula(f->Quantsubformel,1);break;
+         case top:printf(" top ");break;
+         case bottom:printf(" bottom ");break;
+         default: printf("ERROR");break;
+      }
+      if(aufruf==0)
+         printf("\n");
    }
 
-   void printChar(char c){
-   	for(int i=0;i<50;i++){
-   		printf("%c",c);
-   	}
-   	printf("\n");
-   } */
-
-
+   void createFormulaList(formula_s* f){
+      if(dieFormel == NULL){
+         dieFormel = (formula_s*) malloc(sizeof(formula_s));
+         dieFormel = f;
+      }else{
+         while(dieFormel->next != NULL){
+            dieFormel = dieFormel->next;
+         }
+         dieFormel->next = (formula_s*) malloc(sizeof(formula_s));
+         dieFormel = dieFormel->next;
+         dieFormel = f;
+      }
+   }
 
  int yyerror(char* err){
  	printf("Error: %s\n",err);

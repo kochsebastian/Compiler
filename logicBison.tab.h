@@ -49,10 +49,10 @@ extern int yydebug;
 	typedef struct formula_s formula_s;
 	//Zusaetzlich werden extra Structs fuer die Startzeiger angelegt, um die Uebersichtlichkeit zu bewahren
 	typedef struct term_list_s term_list_s;
-	typedef struct atom_list_s atom_list_s;
+
 	typedef struct formula_list_s formula_list_s;
 
-   enum typ {atom, and, or, not, impl, eql, all, ex, top, bottom};
+   enum typ {atom, and, or, not, impl, eql, all, ex, top, bottom, brackets};
 
 	struct term_s{
 		char* name;			//Name
@@ -68,8 +68,8 @@ extern int yydebug;
 
 	struct formula_s{
 		enum typ type;
+      char* operant;
 
-      char* string;
       atom_s* a;
       term_list_s* mylist;
 
@@ -81,7 +81,7 @@ extern int yydebug;
       char* var;
       formula_s* Quantsubformel;
 
-      char* boolsch;
+      char* truefalse;
 
       formula_s* next;
 	};
@@ -90,16 +90,18 @@ extern int yydebug;
 		term_s* first;		//Startknoten der Liste
 	};
 
-	struct atom_list_s{
-		atom_s* first;
-	};
-
-	struct formula_list_s{
-		formula_s* first;
-	};
 
 
-#line 103 "logicBison.tab.h" /* yacc.c:1915  */
+   void printTermList(term_list_s* tl );
+
+   void printFormula(formula_s* f, int aufruf);
+   void createFormulaList(formula_s* f);
+   void printAtom(atom_s* a);
+   void printTerm(term_s* t);
+   formula_s* dieFormel = NULL;
+
+
+#line 105 "logicBison.tab.h" /* yacc.c:1915  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -131,7 +133,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 72 "logicBison.y" /* yacc.c:1915  */
+#line 75 "logicBison.y" /* yacc.c:1915  */
 
   char* sval;
 
@@ -139,11 +141,11 @@ union YYSTYPE
   atom_s* atomval;
   formula_s* formelval;
   term_list_s* tlistval;
-  atom_list_s* alistval;
+
   formula_list_s* flistval;
 
 
-#line 147 "logicBison.tab.h" /* yacc.c:1915  */
+#line 149 "logicBison.tab.h" /* yacc.c:1915  */
 };
 
 typedef union YYSTYPE YYSTYPE;

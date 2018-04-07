@@ -766,125 +766,138 @@ YY_RULE_SETUP
 #line 23 "logicFlex.l"
 {
             yylval.sval = strdup(yytext);
-           return VAR;
+         //   printf("Lexer: Variable:%s \n",yylval.sval);
+            return VAR;
         }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 28 "logicFlex.l"
+#line 29 "logicFlex.l"
 {
             yylval.sval = strdup(yytext);
+         //   printf("Lexer: Predikat:%s \n",yylval.sval);
             return PRAE;
         }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 33 "logicFlex.l"
+#line 35 "logicFlex.l"
 {
             yylval.sval = strdup(yytext);
+         //   printf("Lexer: Funktion:%s \n",yylval.sval);
             return FUNC;
         }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 38 "logicFlex.l"
+#line 41 "logicFlex.l"
 {
             yylval.sval = strdup(yytext);
+         //   printf("Lexer: Boolean:%s \n",yylval.sval);
             return TOPI;
 }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 42 "logicFlex.l"
+#line 46 "logicFlex.l"
 {
             yylval.sval = strdup(yytext);
+         //   printf("Lexer: Boolean:%s \n",yylval.sval);
             return BOTTOMI;
 }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 47 "logicFlex.l"
+#line 52 "logicFlex.l"
 {
+   yylval.sval = strdup(yytext);
    return AND;
 }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 51 "logicFlex.l"
+#line 57 "logicFlex.l"
 {
+   yylval.sval = strdup(yytext);
    return OR;
 }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 55 "logicFlex.l"
+#line 62 "logicFlex.l"
 {
+   yylval.sval = strdup(yytext);
    return NOT;
 }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 59 "logicFlex.l"
+#line 67 "logicFlex.l"
 {
+
    return KOMMA;
 }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 63 "logicFlex.l"
+#line 72 "logicFlex.l"
 {
+   yylval.sval = strdup(yytext);
    return PFEIL;
 }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 67 "logicFlex.l"
+#line 77 "logicFlex.l"
 {
+   yylval.sval = strdup(yytext);
    return DOPPELPFEIL;
 }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 71 "logicFlex.l"
+#line 82 "logicFlex.l"
 {
    yylval.sval = strdup(yytext);
+   //printf("Lexer: Quantor:%s \n",yylval.sval);
    return ALLI;
 }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 76 "logicFlex.l"
+#line 88 "logicFlex.l"
 {
    yylval.sval = strdup(yytext);
+   //printf("Lexer: Quantor:%s \n",yylval.sval);
    return EXI;
 }
 	YY_BREAK
 case 17:
 /* rule 17 can match eol */
 YY_RULE_SETUP
-#line 83 "logicFlex.l"
+#line 96 "logicFlex.l"
 {
   return  NEWLINE;
 }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 87 "logicFlex.l"
+#line 100 "logicFlex.l"
 {
   /* Skip */
 }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 91 "logicFlex.l"
+#line 104 "logicFlex.l"
 ;
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 92 "logicFlex.l"
+#line 105 "logicFlex.l"
 ECHO;
 	YY_BREAK
-#line 888 "<stdout>"
+#line 901 "<stdout>"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1881,7 +1894,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 92 "logicFlex.l"
+#line 105 "logicFlex.l"
 
 
 
