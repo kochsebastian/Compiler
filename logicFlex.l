@@ -21,27 +21,26 @@ P_DIGIT [0-9]
 
 
 {P_VAR}{P_DIGIT}* {
-            yylval.var = strdup(yytext);
+            yylval.sval = strdup(yytext);
            return VAR;
-           /*ausgabe wieder hinzufügen*/
         }
 
 {P_PRAE}{P_DIGIT}* {
-            yylval.var = strdup(yytext);
+            yylval.sval = strdup(yytext);
             return PRAE;
         }
 
 {P_FUNCT}{P_DIGIT}* {
-            yylval.var = strdup(yytext);
+            yylval.sval = strdup(yytext);
             return FUNC;
         }
 
 top {
-            yylval.var = strdup(yytext);
+            yylval.sval = strdup(yytext);
             return TOPI;
 }
 bottom {
-            yylval.var = strdup(yytext);
+            yylval.sval = strdup(yytext);
             return BOTTOMI;
 }
 
@@ -70,12 +69,12 @@ bottom {
 }
 
 all {
-   yylval.var = strdup(yytext);
+   yylval.sval = strdup(yytext);
    return ALLI;
 }
 
 ex {
-   yylval.var = strdup(yytext);
+   yylval.sval = strdup(yytext);
    return EXI;
 }
 
