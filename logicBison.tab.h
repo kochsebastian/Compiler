@@ -82,6 +82,7 @@ extern int yydebug;
       formula_s* Quantsubformel;
 
       char* truefalse;
+      int brackets;
 
 	};
 
@@ -98,14 +99,14 @@ extern int yydebug;
    void printTermList(term_list_s* tl );
    void printFormulaList(formula_list_s* fl);
    void printFormula(formula_s* f, int aufruf);
-
+   void transformNNF(formula_s* f);
 
    void printAtom(atom_s* a);
    void printTerm(term_s* t);
 
 
 
-#line 109 "logicBison.tab.h" /* yacc.c:1915  */
+#line 110 "logicBison.tab.h" /* yacc.c:1915  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -137,7 +138,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 79 "logicBison.y" /* yacc.c:1915  */
+#line 80 "logicBison.y" /* yacc.c:1915  */
 
   char* sval;
 
@@ -146,8 +147,9 @@ union YYSTYPE
   formula_s* formelval;
   term_list_s* tlistval;
   formula_list_s* flistval;
+  formula_s* nnf;
 
-#line 151 "logicBison.tab.h" /* yacc.c:1915  */
+#line 153 "logicBison.tab.h" /* yacc.c:1915  */
 };
 
 typedef union YYSTYPE YYSTYPE;

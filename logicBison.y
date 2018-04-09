@@ -49,6 +49,7 @@
       formula_s* Quantsubformel;
 
       char* truefalse;
+      int brackets;
 
 	};
 
@@ -65,7 +66,7 @@
    void printTermList(term_list_s* tl );
    void printFormulaList(formula_list_s* fl);
    void printFormula(formula_s* f, int aufruf);
-
+   void transformNNF(formula_s* f);
 
    void printAtom(atom_s* a);
    void printTerm(term_s* t);
@@ -84,6 +85,7 @@
   formula_s* formelval;
   term_list_s* tlistval;
   formula_list_s* flistval;
+  formula_s* nnf;
 }
 
 
@@ -116,14 +118,15 @@
 
 stmtseq: /* Empty */
     | NEWLINE stmtseq       {}
-    | FormelListeI  NEWLINE stmtseq {}
+    | Formel  NEWLINE stmtseq {}
     | error NEWLINE stmtseq {};  /* After an error start afresh */
 
- FormelListeI:
+/* NNF:
     Formel {
-         printf("Formel->FormelListe");
+         transformNNF($<formelval>$);
+         printFormula($<formelval>$,0);
 
-};
+};*/
 
 Formel:
    Atom {
@@ -169,6 +172,7 @@ Formel:
    | OPENPAR Formel CLOSEPAR {
       $<formelval>$ = (formula_s*) malloc(sizeof(formula_s));
       $<formelval>$ = $<formelval>2;
+      $<formelval>$->brackets = 1;
       //$<formelval>$->type = brackets;
 
 
@@ -254,6 +258,13 @@ Atom:
       $<atomval>$->mylist = $<tlistval>3;
 
       printf("Parser: Praedikat(TermListe)->Atom\n");
+   }
+   | PRAE {
+      $<atomval>$ = (atom_s*) malloc(sizeof(atom_s));
+      $<atomval>$->name = $<sval>1;
+      $<atomval>$->mylist = NULL;
+
+      printf("Parser: Praedikat->Atom\n");
    };
 
 Term:
@@ -305,15 +316,17 @@ TermL:
 
    void printAtom(atom_s* a  ){
 
-   	printf("%s(",a->name);
 
+      printf("%s",a->name);
    	if(a->mylist == NULL){
-   			printf("NULL\n");
+
    	}
    	else{
+         printf("(");
    	   printTermList(a->mylist);
+         printf(")");
    	}
-      printf(")");
+
    }
 
    void printTerm(term_s* t){
@@ -347,7 +360,9 @@ TermL:
    }
 
    void printFormula(formula_s* f, int aufruf){
-
+      if(f->brackets == 1){
+         printf("(");
+      }
       switch(f->type){
          case atom: printAtom(f->a);break;
          case and: printFormula(f->linkeformel,1);printf(" & ");printFormula(f->rechteformel,1);break;
@@ -359,10 +374,47 @@ TermL:
          case ex: printf(" ex "); printf("%s ",f->var); printFormula(f->Quantsubformel,1);break;
          case top:printf(" top ");break;
          case bottom:printf(" bottom ");break;
-         default: printf("ERROR");break;
+         default: printf("ERROR in printFormula");break;
+      }
+      if(f->brackets == 1){
+      printf(")");
       }
       if(aufruf== 0)
          printf("\n");
+
+   }
+
+   void transformNNF(formula_s* f){
+      formula_s* tmp1;
+      formula_s* tmp2;
+      switch(f->type){
+         case atom:
+            break;// do nothing
+         case and:
+            transformNNF(f->linkeformel);transformNNF(f->rechteformel);break;
+         case or:
+            transformNNF(f->linkeformel);transformNNF(f->rechteformel);break;
+         case not:
+            transformNNF(f->Notsubformel); break;
+         case impl:
+         printf("hkfdhdfjkkfdj");
+            tmp1 = f->linkeformel;
+            f->type = or;
+            //f->operant = "|";
+            f->linkeformel->type = not;
+            //f->linkeformel->operant = "~";
+            f->linkeformel->Notsubformel = tmp1;
+            transformNNF(f->linkeformel);transformNNF(f->rechteformel); break;
+
+         case eql:transformNNF(f->linkeformel);transformNNF(f->rechteformel);break;
+         case all:  break;
+         case ex: break;
+         case top:break;
+         case bottom:break;
+         default: printf("ERROR in transformNNF");break;
+      }
+      //f->type = top; // test
+
 
    }
 
