@@ -123,8 +123,12 @@ stmtseq: /* Empty */
 
  NNF:
     Formel {
-         transformNNF($<formelval>$);
-         //printFormula($<formelval>$,0);
+      //printf("test2hfkg");
+         //$<nnf>$ = (formula_s*) malloc(sizeof(formula_s));
+         //$<nnf>$ = $<formelval>1;
+         //printf("test");
+       transformNNF($<formelval>$);
+         printFormula($<formelval>$,0);
 
 };
 
@@ -385,8 +389,8 @@ TermL:
    }
 
    void transformNNF(formula_s* f){
-      //formula_s* tmp1 = (formula_s*) malloc(sizeof(formula_s));
       formula_s* tmp1;
+      formula_s* tmp2;
       switch(f->type){
          case atom:
             break;// do nothing
@@ -397,24 +401,45 @@ TermL:
          case not:
             transformNNF(f->Notsubformel); break;
          case impl:
-            printf("%u",f->type);
-            printf("%u",f->linkeformel->type);
-            printf("%u",f->rechteformel->type);
+
             tmp1 = (formula_s*) malloc(sizeof(f->linkeformel));
-            tmp1 = f->linkeformel;
+            *(tmp1) = *(f->linkeformel);
+
             f->type = or;
-            //f->linkeformel->type = not; // segmentation fault
-            tmp1->type = not; // segmentation fault
-            /*f->linkeformel->Notsubformel = tmp1;
-            printf("%u",f->type);
-            printf("%u",f->linkeformel->type);
-            printf("%u",f->rechteformel->type);*/
+            f->linkeformel->type = not;
 
-            //transformNNF(f->linkeformel);transformNNF(f->rechteformel); break;
+            f->linkeformel->Notsubformel = (formula_s*) malloc(sizeof(tmp1));
+            f->linkeformel->Notsubformel = tmp1;
+            transformNNF(f->linkeformel);transformNNF(f->rechteformel); break;
+            break;
 
-         case eql:transformNNF(f->linkeformel);transformNNF(f->rechteformel);break;
-         case all:  break;
-         case ex: break;
+         case eql:
+            tmp1 = (formula_s*) malloc(sizeof(f->linkeformel));
+            tmp2 = (formula_s*) malloc(sizeof(f->rechteformel));
+            *(tmp1) = *(f->linkeformel);
+            *(tmp2) = *(f->rechteformel);
+
+            f->type = or;
+
+            //f->linkeformel->brackets = 1;
+            f->linkeformel->type = and;
+            f->linkeformel->linkeformel = (formula_s*) malloc(sizeof(tmp1));
+            f->linkeformel->linkeformel = tmp1;
+            f->linkeformel->rechteformel = (formula_s*) malloc(sizeof(tmp2));
+            f->linkeformel->rechteformel = tmp2;
+
+            //f->rechteformel->brackets = 1;
+            f->rechteformel->type = and;
+            f->rechteformel->linkeformel = (formula_s*) malloc(sizeof(tmp1));
+            f->rechteformel->linkeformel = tmp1;
+            f->rechteformel->rechteformel = (formula_s*) malloc(sizeof(tmp2));
+            f->rechteformel->rechteformel = tmp2;
+
+            transformNNF(f->linkeformel);transformNNF(f->rechteformel);
+            break;
+
+         case all: transformNNF(f->Quantsubformel); break;
+         case ex: transformNNF(f->Quantsubformel);break;
          case top:break;
          case bottom:break;
          default: printf("ERROR in transformNNF");break;

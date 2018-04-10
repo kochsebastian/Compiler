@@ -525,9 +525,9 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   119,   119,   120,   121,   122,   125,   132,   141,   151,
-     161,   172,   183,   195,   207,   219,   230,   241,   255,   262,
-     271,   278,   285,   294,   300
+       0,   119,   119,   120,   121,   122,   125,   136,   145,   155,
+     165,   176,   187,   199,   211,   223,   234,   245,   259,   266,
+     275,   282,   289,   298,   304
 };
 #endif
 
@@ -1342,15 +1342,19 @@ yyreduce:
   case 6:
 #line 125 "logicBison.y" /* yacc.c:1661  */
     {
-         transformNNF((yyval.formelval));
-         //printFormula($<formelval>$,0);
+      //printf("test2hfkg");
+         //$<nnf>$ = (formula_s*) malloc(sizeof(formula_s));
+         //$<nnf>$ = $<formelval>1;
+         //printf("test");
+       transformNNF((yyval.formelval));
+         printFormula((yyval.formelval),0);
 
 }
-#line 1350 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1354 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
   case 7:
-#line 132 "logicBison.y" /* yacc.c:1661  */
+#line 136 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.formelval) = (formula_s*) malloc(sizeof(formula_s));
       (yyval.formelval)->type = atom;
@@ -1360,11 +1364,11 @@ yyreduce:
       printf("Parser: Atom->Formel\n");
       printFormula((yyval.formelval),0);
    }
-#line 1364 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1368 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
   case 8:
-#line 141 "logicBison.y" /* yacc.c:1661  */
+#line 145 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.formelval) = (formula_s*) malloc(sizeof(formula_s));
       (yyval.formelval)->type = top;
@@ -1375,11 +1379,11 @@ yyreduce:
       printFormula((yyval.formelval),0);
 
    }
-#line 1379 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1383 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
   case 9:
-#line 151 "logicBison.y" /* yacc.c:1661  */
+#line 155 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.formelval) = (formula_s*) malloc(sizeof(formula_s));
       (yyval.formelval)->type = bottom;
@@ -1390,11 +1394,11 @@ yyreduce:
       printFormula((yyval.formelval),0);
 
    }
-#line 1394 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1398 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
   case 10:
-#line 161 "logicBison.y" /* yacc.c:1661  */
+#line 165 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.formelval) = (formula_s*) malloc(sizeof(formula_s));
       (yyval.formelval)->type = not;
@@ -1406,11 +1410,11 @@ yyreduce:
       printFormula((yyval.formelval),0);
 
    }
-#line 1410 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1414 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
   case 11:
-#line 172 "logicBison.y" /* yacc.c:1661  */
+#line 176 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.formelval) = (formula_s*) malloc(sizeof(formula_s));
       (yyval.formelval) = (yyvsp[-1].formelval);
@@ -1422,11 +1426,11 @@ yyreduce:
       printFormula((yyval.formelval),0);
 
    }
-#line 1426 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1430 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
   case 12:
-#line 183 "logicBison.y" /* yacc.c:1661  */
+#line 187 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.formelval) = (formula_s*) malloc(sizeof(formula_s));
       (yyval.formelval)->type = and;
@@ -1439,11 +1443,11 @@ yyreduce:
       printFormula((yyval.formelval),0);
 
    }
-#line 1443 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1447 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
   case 13:
-#line 195 "logicBison.y" /* yacc.c:1661  */
+#line 199 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.formelval) = (formula_s*) malloc(sizeof(formula_s));
       (yyval.formelval)->type = or;
@@ -1456,11 +1460,11 @@ yyreduce:
       printFormula((yyval.formelval),0);
 
    }
-#line 1460 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1464 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
   case 14:
-#line 207 "logicBison.y" /* yacc.c:1661  */
+#line 211 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.formelval) = (formula_s*) malloc(sizeof(formula_s));
       (yyval.formelval)->type = impl;
@@ -1473,11 +1477,11 @@ yyreduce:
       printFormula((yyval.formelval),0);
 
    }
-#line 1477 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1481 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
   case 15:
-#line 219 "logicBison.y" /* yacc.c:1661  */
+#line 223 "logicBison.y" /* yacc.c:1661  */
     {
        (yyval.formelval) = (formula_s*) malloc(sizeof(formula_s));
       (yyval.formelval)->type = eql;
@@ -1489,11 +1493,11 @@ yyreduce:
       printFormula((yyval.formelval),0);
 
    }
-#line 1493 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1497 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
   case 16:
-#line 230 "logicBison.y" /* yacc.c:1661  */
+#line 234 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.formelval) = (formula_s*) malloc(sizeof(formula_s));
       (yyval.formelval)->type = all;
@@ -1505,11 +1509,11 @@ yyreduce:
       printFormula((yyval.formelval),0);
 
    }
-#line 1509 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1513 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
   case 17:
-#line 241 "logicBison.y" /* yacc.c:1661  */
+#line 245 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.formelval) = (formula_s*) malloc(sizeof(formula_s));
       (yyval.formelval)->type = ex;
@@ -1522,11 +1526,11 @@ yyreduce:
       printFormula((yyval.formelval),0);
 
    }
-#line 1526 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1530 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
   case 18:
-#line 255 "logicBison.y" /* yacc.c:1661  */
+#line 259 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.atomval) = (atom_s*) malloc(sizeof(atom_s));
       (yyval.atomval)->name = (yyvsp[-3].sval);
@@ -1534,11 +1538,11 @@ yyreduce:
 
       printf("Parser: Praedikat(TermListe)->Atom\n");
    }
-#line 1538 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1542 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
   case 19:
-#line 262 "logicBison.y" /* yacc.c:1661  */
+#line 266 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.atomval) = (atom_s*) malloc(sizeof(atom_s));
       (yyval.atomval)->name = (yyvsp[0].sval);
@@ -1546,11 +1550,11 @@ yyreduce:
 
       printf("Parser: Praedikat->Atom\n");
    }
-#line 1550 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1554 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
   case 20:
-#line 271 "logicBison.y" /* yacc.c:1661  */
+#line 275 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.termval) = (term_s*) malloc(sizeof(term_s));
 		(yyval.termval)->name = (yyvsp[0].sval);
@@ -1558,11 +1562,11 @@ yyreduce:
 		(yyval.termval)->mylist=NULL;
       printf("Parser: Variable->Term\n");
    }
-#line 1562 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1566 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
   case 21:
-#line 278 "logicBison.y" /* yacc.c:1661  */
+#line 282 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.termval) = (term_s*) malloc(sizeof(term_s));
 		(yyval.termval)->name = (yyvsp[-3].sval);
@@ -1570,11 +1574,11 @@ yyreduce:
 		(yyval.termval)->mylist = (yyvsp[-1].tlistval);
       printf("Parser: Funktiom(TermListe)->Term\n");
    }
-#line 1574 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1578 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
   case 22:
-#line 285 "logicBison.y" /* yacc.c:1661  */
+#line 289 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.termval) = (term_s*) malloc(sizeof(term_s));
 		(yyval.termval)->name = (yyvsp[0].sval);
@@ -1582,32 +1586,32 @@ yyreduce:
 		(yyval.termval)->mylist=NULL;
       printf("Parser: Funktion->Term\n");
    }
-#line 1586 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1590 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
   case 23:
-#line 294 "logicBison.y" /* yacc.c:1661  */
+#line 298 "logicBison.y" /* yacc.c:1661  */
     {
       (yyvsp[-2].termval)->next = (yyvsp[0].tlistval)->first;
       (yyvsp[0].tlistval)->first= (yyvsp[-2].termval);
       (yyval.tlistval) = (yyvsp[0].tlistval);
       printf("Parser: Term,TermListe->TermListe\n");
    }
-#line 1597 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1601 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
   case 24:
-#line 300 "logicBison.y" /* yacc.c:1661  */
+#line 304 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.tlistval) = (term_list_s*) malloc(sizeof(term_list_s));
 	   (yyval.tlistval)->first = (yyvsp[0].termval);
       printf("Parser: Term->TermListe\n");
    }
-#line 1607 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1611 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
 
-#line 1611 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1615 "logicBison.tab.c" /* yacc.c:1661  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1835,7 +1839,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 306 "logicBison.y" /* yacc.c:1906  */
+#line 310 "logicBison.y" /* yacc.c:1906  */
 
 
     void printTermList(term_list_s* tl ){
@@ -1918,8 +1922,8 @@ yyreturn:
    }
 
    void transformNNF(formula_s* f){
-      //formula_s* tmp1 = (formula_s*) malloc(sizeof(formula_s));
       formula_s* tmp1;
+      formula_s* tmp2;
       switch(f->type){
          case atom:
             break;// do nothing
@@ -1930,24 +1934,44 @@ yyreturn:
          case not:
             transformNNF(f->Notsubformel); break;
          case impl:
-            printf("%u",f->type);
-            printf("%u",f->linkeformel->type);
-            printf("%u",f->rechteformel->type);
+
             tmp1 = (formula_s*) malloc(sizeof(f->linkeformel));
-            tmp1 = f->linkeformel;
+            *(tmp1) = *(f->linkeformel);
+
             f->type = or;
-            //f->linkeformel->type = not; // segmentation fault
-            tmp1->type = not; // segmetation fault
-            /*f->linkeformel->Notsubformel = tmp1;
-            printf("%u",f->type);
-            printf("%u",f->linkeformel->type);
-            printf("%u",f->rechteformel->type);*/
+            f->linkeformel->type = not;
 
-            //transformNNF(f->linkeformel);transformNNF(f->rechteformel); break;
+            f->linkeformel->Notsubformel = (formula_s*) malloc(sizeof(tmp1));
+            f->linkeformel->Notsubformel = tmp1;
+            transformNNF(f->linkeformel);transformNNF(f->rechteformel); break;
+            break;
 
-         case eql:transformNNF(f->linkeformel);transformNNF(f->rechteformel);break;
-         case all:  break;
-         case ex: break;
+         case eql:
+            tmp1 = (formula_s*) malloc(sizeof(f->linkeformel));
+            tmp2 = (formula_s*) malloc(sizeof(f->rechteformel));
+            *(tmp1) = *(f->linkeformel);
+            *(tmp2) = *(f->rechteformel);
+
+            f->type = or;
+
+            //f->linkeformel->brackets = 1;
+            f->linkeformel->type = and;
+            f->linkeformel->linkeformel = (formula_s*) malloc(sizeof(tmp1));
+            f->linkeformel->linkeformel = tmp1;
+            f->linkeformel->rechteformel = (formula_s*) malloc(sizeof(tmp2));
+            f->linkeformel->rechteformel = tmp2;
+
+            //f->rechteformel->brackets = 1;
+            f->rechteformel->type = and;
+            f->rechteformel->linkeformel = (formula_s*) malloc(sizeof(tmp1));
+            f->rechteformel->linkeformel = tmp1;
+            f->rechteformel->rechteformel = (formula_s*) malloc(sizeof(tmp2));
+            f->rechteformel->rechteformel = tmp2;
+            transformNNF(f->linkeformel);transformNNF(f->rechteformel);
+            break;
+
+         case all: transformNNF(f->Quantsubformel); break;
+         case ex: transformNNF(f->Quantsubformel);break;
          case top:break;
          case bottom:break;
          default: printf("ERROR in transformNNF");break;

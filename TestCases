@@ -6,3 +6,5 @@ X & Z -> Y
 ~ all x P(x)
 ~ ex x P(x)
 /*test*/
+
+~ P(x) -> bottom
