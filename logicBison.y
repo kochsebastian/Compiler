@@ -118,15 +118,15 @@
 
 stmtseq: /* Empty */
     | NEWLINE stmtseq       {}
-    | Formel  NEWLINE stmtseq {}
+    | NNF  NEWLINE stmtseq {}
     | error NEWLINE stmtseq {};  /* After an error start afresh */
 
-/* NNF:
+ NNF:
     Formel {
          transformNNF($<formelval>$);
-         printFormula($<formelval>$,0);
+         //printFormula($<formelval>$,0);
 
-};*/
+};
 
 Formel:
    Atom {
@@ -385,8 +385,8 @@ TermL:
    }
 
    void transformNNF(formula_s* f){
+      //formula_s* tmp1 = (formula_s*) malloc(sizeof(formula_s));
       formula_s* tmp1;
-      formula_s* tmp2;
       switch(f->type){
          case atom:
             break;// do nothing
@@ -397,14 +397,20 @@ TermL:
          case not:
             transformNNF(f->Notsubformel); break;
          case impl:
-         printf("hkfdhdfjkkfdj");
+            printf("%u",f->type);
+            printf("%u",f->linkeformel->type);
+            printf("%u",f->rechteformel->type);
+            tmp1 = (formula_s*) malloc(sizeof(f->linkeformel));
             tmp1 = f->linkeformel;
             f->type = or;
-            //f->operant = "|";
-            f->linkeformel->type = not;
-            //f->linkeformel->operant = "~";
-            f->linkeformel->Notsubformel = tmp1;
-            transformNNF(f->linkeformel);transformNNF(f->rechteformel); break;
+            //f->linkeformel->type = not; // segmentation fault
+            tmp1->type = not; // segmentation fault
+            /*f->linkeformel->Notsubformel = tmp1;
+            printf("%u",f->type);
+            printf("%u",f->linkeformel->type);
+            printf("%u",f->rechteformel->type);*/
+
+            //transformNNF(f->linkeformel);transformNNF(f->rechteformel); break;
 
          case eql:transformNNF(f->linkeformel);transformNNF(f->rechteformel);break;
          case all:  break;

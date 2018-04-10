@@ -466,18 +466,18 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  20
+#define YYFINAL  21
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   61
+#define YYLAST   57
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  20
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  6
+#define YYNNTS  7
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  23
+#define YYNRULES  24
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  45
+#define YYNSTATES  46
 
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
@@ -525,9 +525,9 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   119,   119,   120,   121,   122,   132,   141,   151,   161,
-     172,   183,   195,   207,   219,   230,   241,   255,   262,   271,
-     278,   285,   294,   300
+       0,   119,   119,   120,   121,   122,   125,   132,   141,   151,
+     161,   172,   183,   195,   207,   219,   230,   241,   255,   262,
+     271,   278,   285,   294,   300
 };
 #endif
 
@@ -538,7 +538,7 @@ static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "DOPPELPFEIL", "PFEIL", "OR", "AND",
   "NOT", "EXI", "ALLI", "OPENPAR", "CLOSEPAR", "KOMMA", "NEWLINE", "VAR",
-  "PRAE", "FUNC", "TOPI", "BOTTOMI", "ERROR", "$accept", "stmtseq",
+  "PRAE", "FUNC", "TOPI", "BOTTOMI", "ERROR", "$accept", "stmtseq", "NNF",
   "Formel", "Atom", "Term", "TermL", YY_NULLPTR
 };
 #endif
@@ -553,10 +553,10 @@ static const yytype_uint16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF -14
+#define YYPACT_NINF -12
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-14)))
+  (!!((Yystate) == (-12)))
 
 #define YYTABLE_NINF -3
 
@@ -567,11 +567,11 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      25,    -7,     0,   -13,    -3,     0,    25,     6,   -14,   -14,
-      23,    24,   -14,    25,   -14,     0,     0,    41,   -14,   -12,
-     -14,     0,     0,     0,     0,    25,   -14,    45,    45,   -14,
-     -14,    21,    27,    30,    45,    49,    51,    54,   -14,   -12,
-     -12,   -14,    50,   -14,   -14
+      18,   -11,    30,    -3,    -1,    30,    18,     6,   -12,   -12,
+      20,    19,    38,   -12,    18,   -12,    30,    30,     1,   -12,
+      -6,   -12,    18,    30,    30,    30,    30,   -12,    38,    38,
+     -12,   -12,    36,    22,    43,   -12,    38,    45,    24,    49,
+      -6,    -6,   -12,    46,   -12,   -12
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -579,23 +579,23 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       0,     0,     0,     0,     0,     0,     0,    18,     7,     8,
-       0,     0,     6,     0,     9,     0,     0,     0,     3,     0,
-       1,     0,     0,     0,     0,     0,     5,    16,    15,    10,
-      19,    21,    23,     0,    14,    13,    12,    11,     4,     0,
-       0,    17,     0,    22,    20
+       0,     0,     0,     0,     0,     0,     0,    19,     8,     9,
+       0,     0,     6,     7,     0,    10,     0,     0,     0,     3,
+       0,     1,     0,     0,     0,     0,     0,     5,    17,    16,
+      11,    20,    22,    24,     0,     4,    15,    14,    13,    12,
+       0,     0,    18,     0,    23,    21
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -14,    -1,    -2,   -14,   -14,    19
+     -12,    -5,   -12,    -2,   -12,   -12,    12
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,    10,    11,    12,    32,    33
+      -1,    10,    11,    12,    13,    33,    34
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -603,24 +603,22 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-      14,    15,    30,    17,    31,    18,    13,     2,     3,     4,
-       5,    16,    26,    27,    28,     7,    19,     8,     9,    34,
-      35,    36,    37,    20,    38,    -2,     1,    21,    22,    23,
-      24,    39,     2,     3,     4,     5,     0,    25,     6,    40,
-       7,    41,     8,     9,    21,    22,    23,    24,    21,    22,
-      23,    24,    29,    22,    23,    24,    23,    24,    42,    43,
-      24,    44
+      15,    19,    14,    18,    23,    24,    25,    26,    31,    27,
+      32,    16,    30,    17,    28,    29,    20,    35,    -2,     1,
+      21,    36,    37,    38,    39,     2,     3,     4,     5,    25,
+      26,     6,    22,     7,    41,     8,     9,     2,     3,     4,
+       5,    23,    24,    25,    26,     7,    40,     8,     9,    24,
+      25,    26,    43,    44,    42,    26,     0,    45
 };
 
 static const yytype_int8 yycheck[] =
 {
-       2,    14,    14,     5,    16,     6,    13,     7,     8,     9,
-      10,    14,    13,    15,    16,    15,    10,    17,    18,    21,
-      22,    23,    24,     0,    25,     0,     1,     3,     4,     5,
-       6,    10,     7,     8,     9,    10,    -1,    13,    13,    12,
-      15,    11,    17,    18,     3,     4,     5,     6,     3,     4,
-       5,     6,    11,     4,     5,     6,     5,     6,    39,    40,
-       6,    11
+       2,     6,    13,     5,     3,     4,     5,     6,    14,    14,
+      16,    14,    11,    14,    16,    17,    10,    22,     0,     1,
+       0,    23,    24,    25,    26,     7,     8,     9,    10,     5,
+       6,    13,    13,    15,    12,    17,    18,     7,     8,     9,
+      10,     3,     4,     5,     6,    15,    10,    17,    18,     4,
+       5,     6,    40,    41,    11,     6,    -1,    11
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -628,26 +626,26 @@ static const yytype_int8 yycheck[] =
 static const yytype_uint8 yystos[] =
 {
        0,     1,     7,     8,     9,    10,    13,    15,    17,    18,
-      21,    22,    23,    13,    22,    14,    14,    22,    21,    10,
-       0,     3,     4,     5,     6,    13,    21,    22,    22,    11,
-      14,    16,    24,    25,    22,    22,    22,    22,    21,    10,
-      12,    11,    25,    25,    11
+      21,    22,    23,    24,    13,    23,    14,    14,    23,    21,
+      10,     0,    13,     3,     4,     5,     6,    21,    23,    23,
+      11,    14,    16,    25,    26,    21,    23,    23,    23,    23,
+      10,    12,    11,    26,    26,    11
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    20,    21,    21,    21,    21,    22,    22,    22,    22,
-      22,    22,    22,    22,    22,    22,    22,    23,    23,    24,
-      24,    24,    25,    25
+       0,    20,    21,    21,    21,    21,    22,    23,    23,    23,
+      23,    23,    23,    23,    23,    23,    23,    23,    24,    24,
+      25,    25,    25,    26,    26
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-       0,     2,     0,     2,     3,     3,     1,     1,     1,     2,
-       3,     3,     3,     3,     3,     3,     3,     4,     1,     1,
-       4,     1,     3,     1
+       0,     2,     0,     2,     3,     3,     1,     1,     1,     1,
+       2,     3,     3,     3,     3,     3,     3,     3,     4,     1,
+       1,     4,     1,     3,     1
 };
 
 
@@ -1326,22 +1324,32 @@ yyreduce:
         case 3:
 #line 120 "logicBison.y" /* yacc.c:1661  */
     {}
-#line 1330 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1328 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
   case 4:
 #line 121 "logicBison.y" /* yacc.c:1661  */
     {}
-#line 1336 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1334 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
   case 5:
 #line 122 "logicBison.y" /* yacc.c:1661  */
     {}
-#line 1342 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1340 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
   case 6:
+#line 125 "logicBison.y" /* yacc.c:1661  */
+    {
+         transformNNF((yyval.formelval));
+         //printFormula($<formelval>$,0);
+
+}
+#line 1350 "logicBison.tab.c" /* yacc.c:1661  */
+    break;
+
+  case 7:
 #line 132 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.formelval) = (formula_s*) malloc(sizeof(formula_s));
@@ -1352,10 +1360,10 @@ yyreduce:
       printf("Parser: Atom->Formel\n");
       printFormula((yyval.formelval),0);
    }
-#line 1356 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1364 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
-  case 7:
+  case 8:
 #line 141 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.formelval) = (formula_s*) malloc(sizeof(formula_s));
@@ -1367,10 +1375,10 @@ yyreduce:
       printFormula((yyval.formelval),0);
 
    }
-#line 1371 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1379 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
-  case 8:
+  case 9:
 #line 151 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.formelval) = (formula_s*) malloc(sizeof(formula_s));
@@ -1382,10 +1390,10 @@ yyreduce:
       printFormula((yyval.formelval),0);
 
    }
-#line 1386 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1394 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
-  case 9:
+  case 10:
 #line 161 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.formelval) = (formula_s*) malloc(sizeof(formula_s));
@@ -1398,10 +1406,10 @@ yyreduce:
       printFormula((yyval.formelval),0);
 
    }
-#line 1402 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1410 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
-  case 10:
+  case 11:
 #line 172 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.formelval) = (formula_s*) malloc(sizeof(formula_s));
@@ -1414,10 +1422,10 @@ yyreduce:
       printFormula((yyval.formelval),0);
 
    }
-#line 1418 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1426 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
-  case 11:
+  case 12:
 #line 183 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.formelval) = (formula_s*) malloc(sizeof(formula_s));
@@ -1431,10 +1439,10 @@ yyreduce:
       printFormula((yyval.formelval),0);
 
    }
-#line 1435 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1443 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
-  case 12:
+  case 13:
 #line 195 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.formelval) = (formula_s*) malloc(sizeof(formula_s));
@@ -1448,10 +1456,10 @@ yyreduce:
       printFormula((yyval.formelval),0);
 
    }
-#line 1452 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1460 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
-  case 13:
+  case 14:
 #line 207 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.formelval) = (formula_s*) malloc(sizeof(formula_s));
@@ -1465,10 +1473,10 @@ yyreduce:
       printFormula((yyval.formelval),0);
 
    }
-#line 1469 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1477 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
-  case 14:
+  case 15:
 #line 219 "logicBison.y" /* yacc.c:1661  */
     {
        (yyval.formelval) = (formula_s*) malloc(sizeof(formula_s));
@@ -1481,10 +1489,10 @@ yyreduce:
       printFormula((yyval.formelval),0);
 
    }
-#line 1485 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1493 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
-  case 15:
+  case 16:
 #line 230 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.formelval) = (formula_s*) malloc(sizeof(formula_s));
@@ -1497,10 +1505,10 @@ yyreduce:
       printFormula((yyval.formelval),0);
 
    }
-#line 1501 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1509 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
-  case 16:
+  case 17:
 #line 241 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.formelval) = (formula_s*) malloc(sizeof(formula_s));
@@ -1514,10 +1522,10 @@ yyreduce:
       printFormula((yyval.formelval),0);
 
    }
-#line 1518 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1526 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
-  case 17:
+  case 18:
 #line 255 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.atomval) = (atom_s*) malloc(sizeof(atom_s));
@@ -1526,10 +1534,10 @@ yyreduce:
 
       printf("Parser: Praedikat(TermListe)->Atom\n");
    }
-#line 1530 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1538 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
-  case 18:
+  case 19:
 #line 262 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.atomval) = (atom_s*) malloc(sizeof(atom_s));
@@ -1538,10 +1546,10 @@ yyreduce:
 
       printf("Parser: Praedikat->Atom\n");
    }
-#line 1542 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1550 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
-  case 19:
+  case 20:
 #line 271 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.termval) = (term_s*) malloc(sizeof(term_s));
@@ -1550,10 +1558,10 @@ yyreduce:
 		(yyval.termval)->mylist=NULL;
       printf("Parser: Variable->Term\n");
    }
-#line 1554 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1562 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
-  case 20:
+  case 21:
 #line 278 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.termval) = (term_s*) malloc(sizeof(term_s));
@@ -1562,10 +1570,10 @@ yyreduce:
 		(yyval.termval)->mylist = (yyvsp[-1].tlistval);
       printf("Parser: Funktiom(TermListe)->Term\n");
    }
-#line 1566 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1574 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
-  case 21:
+  case 22:
 #line 285 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.termval) = (term_s*) malloc(sizeof(term_s));
@@ -1574,10 +1582,10 @@ yyreduce:
 		(yyval.termval)->mylist=NULL;
       printf("Parser: Funktion->Term\n");
    }
-#line 1578 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1586 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
-  case 22:
+  case 23:
 #line 294 "logicBison.y" /* yacc.c:1661  */
     {
       (yyvsp[-2].termval)->next = (yyvsp[0].tlistval)->first;
@@ -1585,21 +1593,21 @@ yyreduce:
       (yyval.tlistval) = (yyvsp[0].tlistval);
       printf("Parser: Term,TermListe->TermListe\n");
    }
-#line 1589 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1597 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
-  case 23:
+  case 24:
 #line 300 "logicBison.y" /* yacc.c:1661  */
     {
       (yyval.tlistval) = (term_list_s*) malloc(sizeof(term_list_s));
 	   (yyval.tlistval)->first = (yyvsp[0].termval);
       printf("Parser: Term->TermListe\n");
    }
-#line 1599 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1607 "logicBison.tab.c" /* yacc.c:1661  */
     break;
 
 
-#line 1603 "logicBison.tab.c" /* yacc.c:1661  */
+#line 1611 "logicBison.tab.c" /* yacc.c:1661  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1910,8 +1918,8 @@ yyreturn:
    }
 
    void transformNNF(formula_s* f){
+      //formula_s* tmp1 = (formula_s*) malloc(sizeof(formula_s));
       formula_s* tmp1;
-      formula_s* tmp2;
       switch(f->type){
          case atom:
             break;// do nothing
@@ -1922,14 +1930,20 @@ yyreturn:
          case not:
             transformNNF(f->Notsubformel); break;
          case impl:
-         printf("hkfdhdfjkkfdj");
+            printf("%u",f->type);
+            printf("%u",f->linkeformel->type);
+            printf("%u",f->rechteformel->type);
+            tmp1 = (formula_s*) malloc(sizeof(f->linkeformel));
             tmp1 = f->linkeformel;
             f->type = or;
-            //f->operant = "|";
-            f->linkeformel->type = not;
-            //f->linkeformel->operant = "~";
-            f->linkeformel->Notsubformel = tmp1;
-            transformNNF(f->linkeformel);transformNNF(f->rechteformel); break;
+            //f->linkeformel->type = not; // segmentation fault
+            tmp1->type = not; // segmetation fault
+            /*f->linkeformel->Notsubformel = tmp1;
+            printf("%u",f->type);
+            printf("%u",f->linkeformel->type);
+            printf("%u",f->rechteformel->type);*/
+
+            //transformNNF(f->linkeformel);transformNNF(f->rechteformel); break;
 
          case eql:transformNNF(f->linkeformel);transformNNF(f->rechteformel);break;
          case all:  break;
