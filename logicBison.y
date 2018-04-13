@@ -27,6 +27,10 @@
 		term_s* next;			//Naechstes Element, falls es sich in einer Liste befindet
 	};
 
+   struct term_list_s{
+		term_s* first;		//Startknoten der Liste
+	};
+
 	struct atom_s{
 		char* name;			//Siehe Term
 		term_list_s* mylist;
@@ -35,7 +39,6 @@
 
 	struct formula_s{
 		enum typ type;
-      char* operant;
 
       atom_s* a;
 
@@ -48,15 +51,11 @@
 
       char* var;
 
-      char* trueFalse;
-
       int brackets;
 
 	};
 
-	struct term_list_s{
-		term_s* first;		//Startknoten der Liste
-	};
+
 
 
 
@@ -65,18 +64,20 @@
    void printTermList(term_list_s* tl );
 
    void printFormula(formula_s* f, int aufruf);
-   void transformNNF(formula_s* f);
+   void transformNNF1(formula_s* f);
+   void transformNNF2(formula_s* f);
+   void transformNNF3(formula_s* f);
    formula_s* createFormulaATOM(unsigned int pType, atom_s* pA); // fuer Atom
-   formula_s* createFormulaBOOL(unsigned int pType, char* pTrueFalse); //
-   formula_s* createFormulaNOT(unsigned int pType, char* pOperant, formula_s* pSubformelNOT);
-   formula_s* createFormulaQUANT(unsigned int pType, char* pOperant, formula_s* pSubformelQUANT, char* pVar);
+   formula_s* createFormulaBOOL(unsigned int pType); //
+   formula_s* createFormulaNOT(unsigned int pType,  formula_s* pSubformelNOT);
+   formula_s* createFormulaQUANT(unsigned int pType, formula_s* pSubformelQUANT, char* pVar);
    formula_s* createFormulaBRACK(formula_s* pformel, int pBrackets);
-   formula_s* createFormulaJUNKT(unsigned int pType, char* pOperant, formula_s* pLinkeformel, formula_s* pRechteformel);
-
+   formula_s* createFormulaJUNKT(unsigned int pType,  formula_s* pLinkeformel, formula_s* pRechteformel);
+void printFormulaHladik(formula_s* lala);
 
    void printAtom(atom_s* a);
    void printTerm(term_s* t);
-
+   formula_s* dieFormel;
 
 };
 
@@ -91,7 +92,8 @@
   formula_s* formelval;
   term_list_s* tlistval;
 
-  formula_s* nnf;
+  formula_s* nnfval;
+  formula_s* nnf2val;
 }
 
 
@@ -111,7 +113,7 @@
 
 %token NEWLINE
 
-%token VAR
+%left VAR
 %token PRAE
 %token FUNC
 %token TOPI
@@ -124,16 +126,44 @@
 
 stmtseq: /* Empty */
     | NEWLINE stmtseq       {}
-    | Formel  NEWLINE stmtseq {}
+    | NNF3 NEWLINE stmtseq {}
     | error NEWLINE stmtseq {};  /* After an error start afresh */
-/*
- NNF:
+NNF3:
+   NNF2 {
+      printf("Schritt 2: ");printFormula(dieFormel,0);
+      transformNNF3(dieFormel);
+      printf("Schritt 3: ");printFormula(dieFormel,0);
+      printf("\n ---------- \n");
+      printFormulaHladik(dieFormel);
+      printf("\n ---------- \n");
+   };
+NNF2:
+   NNF1 {
+      printf("Schritt 1: ");printFormula(dieFormel,0);
+      transformNNF2(dieFormel);
+      printf("\n ---------- \n");
+      printFormulaHladik(dieFormel);
+      printf("\n ---------- \n");
+   };
+
+NNF1:
+   store {
+      transformNNF1(dieFormel);
+      printf("\n ---------- \n");
+      printFormulaHladik(dieFormel);
+      printf("\n ---------- \n");
+
+   };
+
+store:
     Formel {
+      dieFormel = $<formelval>1;
+      printf("Die Formel: ");printFormula(dieFormel,0);
+      printf("\n ---------- \n");
+      printFormulaHladik(dieFormel);
+      printf("\n ---------- \n");
 
-      // transformNNF($<formelval>$);
-         printFormula($<formelval>$,0);
-
-};*/
+};
 
 Formel:
    Atom {
@@ -142,19 +172,19 @@ Formel:
       printFormula($<formelval>$,0);
    }
    | TOPI {
-      $<formelval>$ = createFormulaBOOL(top, $<sval>1);
+      $<formelval>$ = createFormulaBOOL(top);
       printf("Parser: True->Formel\n");
       printFormula($<formelval>$,0);
 
    }
    | BOTTOMI {
-      $<formelval>$ = createFormulaBOOL(bottom, $<sval>1);
+      $<formelval>$ = createFormulaBOOL(bottom);
       printf("Parser: False->Formel\n");
       printFormula($<formelval>$,0);
 
    }
    | NOT Formel {
-      $<formelval>$ = createFormulaNOT(not,$<sval>1,$<formelval>2);
+      $<formelval>$ = createFormulaNOT(not,$<formelval>2);
       printf("Parser: Not Formel->Formel\n");
       printFormula($<formelval>$,0);
 
@@ -166,37 +196,37 @@ Formel:
 
    }
    | Formel AND Formel {
-      $<formelval>$ = createFormulaJUNKT(and,$<sval>2,$<formelval>1,$<formelval>3);
+      $<formelval>$ = createFormulaJUNKT(and,$<formelval>1,$<formelval>3);
       printf("Parser: FormelandFormel->Formel\n");
       printFormula($<formelval>$,0);
 
    }
    | Formel OR Formel {
-      $<formelval>$ = createFormulaJUNKT(or,$<sval>2,$<formelval>1,$<formelval>3);
+      $<formelval>$ = createFormulaJUNKT(or,$<formelval>1,$<formelval>3);
       printf("Parser: FormelorFormel->Formel\n");
       printFormula($<formelval>$,0);
 
    }
    | Formel PFEIL Formel {
-      $<formelval>$ = createFormulaJUNKT(impl,$<sval>2,$<formelval>1,$<formelval>3);
+      $<formelval>$ = createFormulaJUNKT(impl,$<formelval>1,$<formelval>3);
       printf("Parser: FormelimplFormel->Formel\n");
       printFormula($<formelval>$,0);
 
    }
    | Formel DOPPELPFEIL Formel {
-      $<formelval>$ = createFormulaJUNKT(eql,$<sval>2,$<formelval>1,$<formelval>3);
+      $<formelval>$ = createFormulaJUNKT(eql,$<formelval>1,$<formelval>3);
       printf("Parser: FormeleqFormel->Formel\n");
       printFormula($<formelval>$,0);
 
    }
    | ALLI VAR Formel {
-      $<formelval>$ = createFormulaQUANT(all,$<sval>1,$<formelval>3,$<sval>2);
+      $<formelval>$ = createFormulaQUANT(all,$<formelval>3,$<sval>2);
       printf("Parser: AllVarFormel->Formel\n");
       printFormula($<formelval>$,0);
 
    }
    | EXI VAR Formel {
-      $<formelval>$ = createFormulaQUANT(ex,$<sval>1,$<formelval>3,$<sval>2);
+      $<formelval>$ = createFormulaQUANT(ex,$<formelval>3,$<sval>2);
       printf("Parser: ExVarFormel->Formel\n");
       printFormula($<formelval>$,0);
 
@@ -224,7 +254,7 @@ Term:
 		$<termval>$->name = $<sval>1;
 		$<termval>$->next=NULL;
 		$<termval>$->mylist=NULL;
-      printf("Parser: Variable->Term\n");
+      printf("Parser: Variable:->Term\n");
    }
    | FUNC OPENPAR TermL CLOSEPAR {
       $<termval>$ = (term_s*) malloc(sizeof(term_s));
@@ -241,6 +271,7 @@ Term:
       printf("Parser: Funktion->Term\n");
    };
 
+
 TermL:
    Term KOMMA TermL {
       $<termval>1->next = $<tlistval>3->first;
@@ -256,13 +287,7 @@ TermL:
 
 %%
 
-    void printTermList(term_list_s* tl ){
-   	term_s* myt = tl->first;
-   	while(myt != NULL){
-   		printTerm(myt);
-   		myt = myt->next;
-   	}
-   }
+
 
 
    void printAtom(atom_s* a  ){
@@ -279,6 +304,21 @@ TermL:
    	}
 
    }
+
+   void printTermList(term_list_s* tl ){
+     term_s* myt = tl->first;
+
+     while(myt != NULL){
+        printTerm(myt);
+        if(myt->mylist != NULL){
+           printf("(");
+         printTermList(myt->mylist);
+         printf(")");
+       }
+        myt = myt->next;
+     }
+
+  }
 
    void printTerm(term_s* t){
 
@@ -299,25 +339,25 @@ TermL:
       return returnFormula;
    }
 
-   formula_s* createFormulaBOOL(unsigned int pType, char* pTrueFalse){
+   formula_s* createFormulaBOOL(unsigned int pType){
       formula_s* returnFormula = (formula_s*) malloc(sizeof(formula_s));
       returnFormula->type = pType;
-      returnFormula->trueFalse = pTrueFalse;
+
       return returnFormula;
    }
 
-   formula_s* createFormulaNOT(unsigned int pType, char* pOperant, formula_s* pSubformelNOT){
+   formula_s* createFormulaNOT(unsigned int pType,  formula_s* pSubformelNOT){
       formula_s* returnFormula = (formula_s*) malloc(sizeof(formula_s));
       returnFormula->type = pType;
-      returnFormula->operant = pOperant;
+
       returnFormula->subformelNOT = pSubformelNOT;
       return returnFormula;
    }
 
-   formula_s* createFormulaQUANT(unsigned int pType, char* pOperant, formula_s* pSubformelQUANT, char* pVar){
+   formula_s* createFormulaQUANT(unsigned int pType, formula_s* pSubformelQUANT, char* pVar){
       formula_s* returnFormula = (formula_s*) malloc(sizeof(formula_s));
       returnFormula->type = pType;
-      returnFormula->operant = pOperant;
+
       returnFormula->subformelQUANT = pSubformelQUANT;
       returnFormula->var = pVar;
       return returnFormula;
@@ -329,10 +369,10 @@ TermL:
       returnFormula->brackets = pBrackets;
       return returnFormula;
    }
-   formula_s* createFormulaJUNKT(unsigned int pType, char* pOperant, formula_s* pLinkeformel, formula_s* pRechteformel){
+   formula_s* createFormulaJUNKT(unsigned int pType,  formula_s* pLinkeformel, formula_s* pRechteformel){
       formula_s* returnFormula = (formula_s*) malloc(sizeof(formula_s));
       returnFormula->type = pType;
-      returnFormula->operant = pOperant;
+
       returnFormula->linkeformel = pLinkeformel;
       returnFormula->rechteformel = pRechteformel;
       return returnFormula;
@@ -363,68 +403,149 @@ TermL:
 
    }
 
-   /*void transformNNF(formula_s* f){
+   void printFormulaHladik(formula_s* f){
+
+      switch(f->type){
+         case atom: printAtom(f->a);break;
+         case and: printf("AND\n");printFormulaHladik(f->linkeformel);printf("\n");printFormulaHladik(f->rechteformel);printf("\n");break;
+         case or: printf("OR\n");printFormulaHladik(f->linkeformel);printf("\n");printFormulaHladik(f->rechteformel);printf("\n");break;
+         case impl: printf("IMPL\n");printFormulaHladik(f->linkeformel);printf("\n");printFormulaHladik(f->rechteformel);printf("\n");break;
+         case eql: printf("EQL\n");printFormulaHladik(f->linkeformel);printf("\n");printFormulaHladik(f->rechteformel);printf("\n");break;
+         case not: printf("NOT\n"); printFormulaHladik(f->subformelNOT); printf("\n");break;
+         case all: printf("ALL "); printf("%s \n",f->var); printFormulaHladik(f->subformelQUANT);printf("\n"); break;
+         case ex: printf("EX "); printf("%s \n",f->var); printFormulaHladik(f->subformelQUANT);printf("\n");break;
+         case top:printf("TOP\n");break;
+         case bottom:printf("BOTTOM\n");break;
+         default: printf("ERROR in printFormula");break;
+      }
+
+
+   }
+
+
+   void transformNNF1(formula_s* f){
       formula_s* tmp1;
       formula_s* tmp2;
+      formula_s* tmp3;
       switch(f->type){
          case atom:
             break;// do nothing
          case and:
-            transformNNF(f->linkeformel);transformNNF(f->rechteformel);break;
+            transformNNF1(f->linkeformel);transformNNF1(f->rechteformel);break;
          case or:
-            transformNNF(f->linkeformel);transformNNF(f->rechteformel);break;
+            transformNNF1(f->linkeformel);transformNNF1(f->rechteformel);break;
          case not:
-            transformNNF(f->subformelNOT); break;
+            transformNNF1(f->subformelNOT); break;
          case impl:
-
-         /*   tmp1 = (formula_s*) malloc(sizeof(f->linkeformel));
-            *(tmp1) = *(f->linkeformel);
-
+            tmp1 = createFormulaNOT(not, f->linkeformel);
             f->type = or;
-            f->linkeformel->type = not;
-
-            f->linkeformel->Notsubformel = (formula_s*) malloc(sizeof(tmp1));
-            f->linkeformel->Notsubformel = tmp1;
-            transformNNF(f->linkeformel);transformNNF(f->rechteformel); break; // kommentar beenden
+            f->linkeformel = tmp1;
+            transformNNF1(f->linkeformel);transformNNF1(f->rechteformel); break;
             break;
 
          case eql:
-            //tmp1 = (formula_s*) malloc(sizeof(f->linkeformel));
-            //tmp2 = (formula_s*) malloc(sizeof(f->rechteformel));
-            //*(tmp1) = *(f->linkeformel);
-            //*(tmp2) = *(f->rechteformel);
-
+            tmp1 = createFormulaJUNKT(and,  f->linkeformel, f->rechteformel);
+            tmp2 = createFormulaNOT(not, f->rechteformel);
+            tmp3 = createFormulaNOT(not, f->linkeformel);
             f->type = or;
-            f->linkeformel->type = not;
-            //f->linkeformel->brackets = 1;
-         //   f->linkeformel->type = not;
-         /*   f->linkeformel->linkeformel = (formula_s*) malloc(sizeof(tmp1));
-            f->linkeformel->linkeformel = tmp1;
-            f->linkeformel->rechteformel = (formula_s*) malloc(sizeof(tmp2));
-            f->linkeformel->rechteformel = tmp2;
-
-            //f->rechteformel->brackets = 1;
-            f->rechteformel->type = and;
-            f->rechteformel->linkeformel = (formula_s*) malloc(sizeof(tmp1));
-            f->rechteformel->linkeformel = tmp1;
-            f->rechteformel->rechteformel = (formula_s*) malloc(sizeof(tmp2));
+            f->linkeformel = tmp1;
+            f->linkeformel->brackets = 1;
+            tmp1 = createFormulaJUNKT(and,  f->linkeformel, f->rechteformel);
+            f->rechteformel = tmp1;
+            f->rechteformel->brackets = 1;
+            f->rechteformel->linkeformel = tmp3;
             f->rechteformel->rechteformel = tmp2;
-
-            transformNNF(f->linkeformel);transformNNF(f->rechteformel); // kommentar beenden
+            transformNNF1(f->linkeformel);transformNNF1(f->rechteformel);
             break;
 
-         case all: transformNNF(f->subformelQUANT); break;
-         case ex: transformNNF(f->subformelQUANT);break;
+         case all: transformNNF1(f->subformelQUANT); break;
+         case ex: transformNNF1(f->subformelQUANT);break;
          case top:break;
          case bottom:break;
          default: printf("ERROR in transformNNF");break;
       }
-      //f->type = top; // test
 
 
-   }*/
+   }
+
+   void transformNNF2(formula_s* f){
+      formula_s* tmp1;
+      formula_s* tmp2;
+
+      switch(f->type){
+         case atom:break;// do nothing
+         case and:transformNNF2(f->linkeformel);transformNNF2(f->rechteformel);break;
+         case or:transformNNF2(f->linkeformel);transformNNF2(f->rechteformel);break;
+         case not:
+            if(f->subformelNOT->type == or){// nichtformel->oderformel
+               f->type = and;
+               tmp1 = createFormulaNOT(not,f->subformelNOT->linkeformel);
+               tmp2 = createFormulaNOT(not,f->subformelNOT->rechteformel);
+               f->linkeformel = tmp1;
+               f->rechteformel = tmp2;
+               f->brackets = 0;
+               transformNNF2(f->linkeformel);transformNNF2(f->rechteformel);
+            }
+            else if(f->subformelNOT->type == and){// nichtformel->oderformel
+               f->type = or;
+               tmp1 = createFormulaNOT(not,f->subformelNOT->linkeformel);
+               tmp2 = createFormulaNOT(not,f->subformelNOT->rechteformel);
+               f->linkeformel = tmp1;
+               f->rechteformel = tmp2;
+               f->brackets = 0;
+               transformNNF2(f->linkeformel);transformNNF2(f->rechteformel);
+            }
+            else{
+               transformNNF2(f->subformelNOT);
+            }
+            break;
+         case all: transformNNF2(f->subformelQUANT); break;
+         case ex: transformNNF2(f->subformelQUANT);break;
+         case top:break;
+         case bottom:break;
+         default: printf("ERROR in transformNNF");break;
+      }
 
 
+   }
+   void transformNNF3(formula_s* f){
+      formula_s* tmp;
+      switch(f->type){
+      case atom:break;// do nothing
+      case and:transformNNF3(f->linkeformel);transformNNF3(f->rechteformel);break;
+      case or:transformNNF3(f->linkeformel);transformNNF3(f->rechteformel);break;
+      case not:
+         if(f->subformelNOT->type == not){
+            tmp = (formula_s*) (formula_s*) malloc(sizeof(formula_s));
+            tmp = f->subformelNOT->subformelNOT;
+            *(f) = *(tmp);
+            transformNNF3(f);
+         }else if(f->subformelNOT->type == top){
+            f->type = bottom;
+            break;
+         }else if(f->subformelNOT->type == bottom){
+            f->type = top;
+            break;
+         }else if(f->subformelNOT->type == all){
+            f->type = ex;
+            f->var = f->subformelNOT->var;
+            f->subformelQUANT = f->subformelNOT->subformelQUANT;
+            transformNNF3(f->subformelQUANT);
+         }else if(f->subformelNOT->type == ex){
+            f->type = all;
+            f->var = f->subformelNOT->var;
+            f->subformelQUANT = f->subformelNOT->subformelQUANT;
+            transformNNF3(f->subformelQUANT);
+         }else
+            transformNNF3(f->subformelNOT);
+         break;
+      case all: transformNNF3(f->subformelQUANT); break;
+      case ex: transformNNF3(f->subformelQUANT);break;
+      case top: break;
+      case bottom: break;
+      default: printf("ERROR in transformNNF");break;
+   }
+}
 
 
  int yyerror(char* err){

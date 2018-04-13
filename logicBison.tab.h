@@ -60,6 +60,10 @@ extern int yydebug;
 		term_s* next;			//Naechstes Element, falls es sich in einer Liste befindet
 	};
 
+   struct term_list_s{
+		term_s* first;		//Startknoten der Liste
+	};
+
 	struct atom_s{
 		char* name;			//Siehe Term
 		term_list_s* mylist;
@@ -68,7 +72,6 @@ extern int yydebug;
 
 	struct formula_s{
 		enum typ type;
-      char* operant;
 
       atom_s* a;
 
@@ -81,15 +84,11 @@ extern int yydebug;
 
       char* var;
 
-      char* trueFalse;
-
       int brackets;
 
 	};
 
-	struct term_list_s{
-		term_s* first;		//Startknoten der Liste
-	};
+
 
 
 
@@ -98,21 +97,23 @@ extern int yydebug;
    void printTermList(term_list_s* tl );
 
    void printFormula(formula_s* f, int aufruf);
-   void transformNNF(formula_s* f);
+   void transformNNF1(formula_s* f);
+   void transformNNF2(formula_s* f);
+   void transformNNF3(formula_s* f);
    formula_s* createFormulaATOM(unsigned int pType, atom_s* pA); // fuer Atom
-   formula_s* createFormulaBOOL(unsigned int pType, char* pTrueFalse); //
-   formula_s* createFormulaNOT(unsigned int pType, char* pOperant, formula_s* pSubformelNOT);
-   formula_s* createFormulaQUANT(unsigned int pType, char* pOperant, formula_s* pSubformelQUANT, char* pVar);
+   formula_s* createFormulaBOOL(unsigned int pType); //
+   formula_s* createFormulaNOT(unsigned int pType,  formula_s* pSubformelNOT);
+   formula_s* createFormulaQUANT(unsigned int pType, formula_s* pSubformelQUANT, char* pVar);
    formula_s* createFormulaBRACK(formula_s* pformel, int pBrackets);
-   formula_s* createFormulaJUNKT(unsigned int pType, char* pOperant, formula_s* pLinkeformel, formula_s* pRechteformel);
-
+   formula_s* createFormulaJUNKT(unsigned int pType,  formula_s* pLinkeformel, formula_s* pRechteformel);
+void printFormulaHladik(formula_s* lala);
 
    void printAtom(atom_s* a);
    void printTerm(term_s* t);
+   formula_s* dieFormel;
 
 
-
-#line 116 "logicBison.tab.h" /* yacc.c:1915  */
+#line 117 "logicBison.tab.h" /* yacc.c:1915  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -144,7 +145,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 86 "logicBison.y" /* yacc.c:1915  */
+#line 87 "logicBison.y" /* yacc.c:1915  */
 
   char* sval;
 
@@ -153,9 +154,10 @@ union YYSTYPE
   formula_s* formelval;
   term_list_s* tlistval;
 
-  formula_s* nnf;
+  formula_s* nnfval;
+  formula_s* nnf2val;
 
-#line 159 "logicBison.tab.h" /* yacc.c:1915  */
+#line 161 "logicBison.tab.h" /* yacc.c:1915  */
 };
 
 typedef union YYSTYPE YYSTYPE;

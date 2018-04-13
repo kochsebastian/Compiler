@@ -1,0 +1,31 @@
+Q(f(g(x))) -> Q(f)
+Q(f(g(x,y)))
+Q(f(g(x),y))
+Q(f(g(x)),y)
+
+wie sollte die datenstruktur aus sehen:
+
+Term:
+   name = x
+   mylist = Null
+   next = NULL
+Termliste
+   Term:first = xTerm
+
+
+Term
+   name = f
+   mylist = xTerm
+   next = NULL
+TermListe
+   Term:first = fTerm
+
+Term
+   name = g
+   mylist = fTerm
+   next = NULL
+
+Termliste
+   Term:first = gTerm
+
+Q()
