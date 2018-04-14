@@ -8,13 +8,11 @@
 
 %}
 
- %code requires{	//Alle folgenden Zeilen werden ins
-   //Typedef der Structs vor der konkreten Implementation aufgrund von rekursiven Abhaengigkeiten
-	//Benoetigte Structs: Term, Atom und Formel.
+ %code requires{
 	typedef struct term_s term_s;
 	typedef struct atom_s atom_s;
 	typedef struct formula_s formula_s;
-	//Zusaetzlich werden extra Structs fuer die Startzeiger angelegt, um die Uebersichtlichkeit zu bewahren
+
 	typedef struct term_list_s term_list_s;
 
 
@@ -22,17 +20,17 @@
    enum typ {atom, and, or, not, impl, eql, all, ex, top, bottom};
 
 	struct term_s{
-		char* name;			//Name
-		term_list_s* mylist;	//Eigene Termliste (Bei keiner Verwendung NULL)
-		term_s* next;			//Naechstes Element, falls es sich in einer Liste befindet
+		char* name;
+		term_list_s* mylist;
+		term_s* next;
 	};
 
    struct term_list_s{
-		term_s* first;		//Startknoten der Liste
+		term_s* first;
 	};
 
 	struct atom_s{
-		char* name;			//Siehe Term
+		char* name;
 		term_list_s* mylist;
 		atom_s* next;
 	};
@@ -73,7 +71,7 @@
    formula_s* createFormulaQUANT(unsigned int pType, formula_s* pSubformelQUANT, char* pVar);
    formula_s* createFormulaBRACK(formula_s* pformel, int pBrackets);
    formula_s* createFormulaJUNKT(unsigned int pType,  formula_s* pLinkeformel, formula_s* pRechteformel);
-void printFormulaHladik(formula_s* lala);
+   void printFormulaHladik(formula_s* lala);
 
    void printAtom(atom_s* a);
    void printTerm(term_s* t);
@@ -92,8 +90,6 @@ void printFormulaHladik(formula_s* lala);
   formula_s* formelval;
   term_list_s* tlistval;
 
-  formula_s* nnfval;
-  formula_s* nnf2val;
 }
 
 
@@ -128,40 +124,47 @@ stmtseq: /* Empty */
     | NEWLINE stmtseq       {}
     | NNF3 NEWLINE stmtseq {}
     | error NEWLINE stmtseq {};  /* After an error start afresh */
+
 NNF3:
    NNF2 {
-      printf("Schritt 2: ");printFormula(dieFormel,0);
+
       transformNNF3(dieFormel);
-      printf("Schritt 3: ");printFormula(dieFormel,0);
-      printf("\n ---------- \n");
+      printf("\nSchritt 3: ");
+      printFormula(dieFormel,0);
+      printf("\n");
       printFormulaHladik(dieFormel);
-      printf("\n ---------- \n");
+      printf("----------");
    };
 NNF2:
    NNF1 {
-      printf("Schritt 1: ");printFormula(dieFormel,0);
+
       transformNNF2(dieFormel);
-      printf("\n ---------- \n");
+      printf("\nSchritt 2: ");
+      printFormula(dieFormel,0);
+      printf("\n");
       printFormulaHladik(dieFormel);
-      printf("\n ---------- \n");
+      printf("----------");
    };
 
 NNF1:
    store {
       transformNNF1(dieFormel);
-      printf("\n ---------- \n");
+      printf("\nSchritt 1: ");
+      printFormula(dieFormel,0);
+      printf("\n");
       printFormulaHladik(dieFormel);
-      printf("\n ---------- \n");
+      printf("----------");
 
    };
 
 store:
     Formel {
       dieFormel = $<formelval>1;
-      printf("Die Formel: ");printFormula(dieFormel,0);
-      printf("\n ---------- \n");
+      printf("\nDie Formel: ");
+      printFormula(dieFormel,0);
+      printf("\n");
       printFormulaHladik(dieFormel);
-      printf("\n ---------- \n");
+      printf(" ---------- ");
 
 };
 
@@ -529,12 +532,12 @@ TermL:
          }else if(f->subformelNOT->type == all){
             f->type = ex;
             f->var = f->subformelNOT->var;
-            f->subformelQUANT = f->subformelNOT->subformelQUANT;
+            f->subformelQUANT = createFormulaNOT(not,f->subformelNOT->subformelQUANT);
             transformNNF3(f->subformelQUANT);
          }else if(f->subformelNOT->type == ex){
             f->type = all;
             f->var = f->subformelNOT->var;
-            f->subformelQUANT = f->subformelNOT->subformelQUANT;
+            f->subformelQUANT = createFormulaNOT(not,f->subformelNOT->subformelQUANT);
             transformNNF3(f->subformelQUANT);
          }else
             transformNNF3(f->subformelNOT);
